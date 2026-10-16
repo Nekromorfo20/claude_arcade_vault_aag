@@ -8,15 +8,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The repo currently is an unmodified `create-next-app` scaffold (`app/page.tsx` is still the default Next.js welcome page) — the real product has not been built yet. The intended design and data model live as static HTML/JSX reference mockups in `references/templates/`, which future work should port into the Next.js `app/` directory.
 
-## Commands
-
-```bash
-npm run dev     # start Next.js dev server (Turbopack)
-npm run build   # production build
-npm run start   # run production build
-npm run lint    # eslint (flat config, eslint.config.mjs)
-```
-
 There is no test runner configured in this repo yet. `npm run lint` currently reports errors inside `references/templates/*.jsx` (undefined `React`, undefined components) — expected, since those files are CDN-React prototype code, not part of the compiled app; don't try to "fix" them into lint-clean state.
 
 ## Spec-driven workflow
@@ -54,3 +45,6 @@ Tailwind CSS v4 via `@tailwindcss/turbopack` (configured in `next.config.ts` as 
 ### TypeScript
 
 Path alias `@/*` maps to the repo root (see `tsconfig.json`).
+
+## Skills
+Always use /frontend-design to design the user interface.
