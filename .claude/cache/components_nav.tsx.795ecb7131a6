@@ -47,8 +47,9 @@ export function Nav() {
     };
   }, []);
 
-  const isActive = (name: "biblioteca" | "salon" | "auth") => {
-    if (name === "biblioteca") return pathname === "/" || pathname.startsWith("/juego");
+  const isActive = (name: "home" | "biblioteca" | "salon" | "auth") => {
+    if (name === "home") return pathname === "/";
+    if (name === "biblioteca") return pathname === "/biblioteca" || pathname.startsWith("/juego");
     if (name === "salon") return pathname === "/salon";
     return pathname === "/ingresar";
   };
@@ -73,7 +74,10 @@ export function Nav() {
           </div>
         </div>
         <div className="links">
-          <Link href="/" className={isActive("biblioteca") ? "active" : ""}>
+          <Link href="/" className={isActive("home") ? "active" : ""}>
+            Inicio
+          </Link>
+          <Link href="/biblioteca" className={isActive("biblioteca") ? "active" : ""}>
             Biblioteca
           </Link>
           <Link href="/salon" className={isActive("salon") ? "active" : ""}>
@@ -111,7 +115,10 @@ export function Nav() {
         <div className="pixel neon-cyan" style={{ fontSize: 11, marginBottom: 16 }}>
           MENÚ
         </div>
-        <a className={isActive("biblioteca") ? "active" : ""} onClick={() => go("/")}>
+        <a className={isActive("home") ? "active" : ""} onClick={() => go("/")}>
+          Inicio
+        </a>
+        <a className={isActive("biblioteca") ? "active" : ""} onClick={() => go("/biblioteca")}>
           Biblioteca
         </a>
         <a className={isActive("salon") ? "active" : ""} onClick={() => go("/salon")}>
