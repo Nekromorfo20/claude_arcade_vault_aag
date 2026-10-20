@@ -1,0 +1,57 @@
+# Context
+
+The user wants a Claude Code **hook** that automatically runs Prettier and ESLint on any file (React/JSX/TS or Markdown, or really any file) right after Claude Code creates/writes it — but only inside this "Arcade Vault" project, not globally.
+
+Current state of the repo:
+- No `.claude/settings.json` exists yet (only `.claude/settings.local.json`-less `.claude/` dir with logs/cache/skills).
+- Prettier is **not installed** as a dependency.
+- ESLint uses flat config (`eslint.config.mjs`) based on `eslint-config-next`, and is already known (per `CLAUDE.md`) to report errors inside `references/templates/*.jsx` — this is expected/by design since those are CDN-React prototype files, not part of the compiled app. The hook must not try to "fix" or fail loudly on those files.
+- `package.json` has no `format`/`prettier` script.
+
+Claude Code hooks are configured per-project in `.claude/settings.json` (not global `~/.claude/settings.json`), which is exactly the scope requested ("solo debe funcionar en este proyecto"). The relevant hook event is `PostToolUse` matched on `Write|Edit` (covers file creation and edits), since there's no dedicated "file created" event. We'll add a project-local hook script that:
+1. Reads the file path from the tool-call JSON on stdin.
+2. Skips files outside the repo, and skips `references/templates/**` (known-broken prototype code per CLAUDE.md) and other ignorable paths (`node_modules`, `.next`, build output).
+3. Runs `prettier --write` on the file if its extension is one Prettier handles (`.md`, `.jsx`, `.tsx`, `.ts`, `.js`, `.json`, `.css`).
+4. Runs `eslint --fix` on the file if it's JS/TS/JSX/TSX (Prettier doesn't lint Markdown, ESLint doesn't either in this config).
+5. Never blocks/fails the tool call — lint/format errors are surfaced as a warning in hook output but don't throw (so Claude Code's flow isn't interrupted for pre-existing prototype lint errors).
+
+## Implementation
+
+1. **Install Prettier as a dev dependency** (not currently installed):
+   ```
+   npm install --save-dev prettier
+   ```
+   Add a minimal `.prettierrc.json` (or reuse defaults) — keep it minimal: just enable the project's existing conventions (double quotes/semicolons are Next.js defaults, so an empty/near-empty config is fine). Add `.prettierignore` excluding `references/templates/` (CDN-React globals, not meant to be reformatted) `.next/`, `node_modules/`.
+
+2. **Add the hook script**: `.claude/hooks/format-on-write.sh` (or `.mjs`/`.js` — bash is simplest here since this only needs to shell out to `npx prettier`/`npx eslint`):
+   - Parses `tool_input.file_path` from the JSON passed on stdin (use `jq` if available, otherwise a small inline node/python one-liner — check what's available in this environment first).
+   - Resolves path relative to repo root; bail out silently (exit 0) if the path is outside the repo or matches an ignore list (`references/templates/`, `node_modules/`, `.next/`).
+   - If extension is one of `.md .mjs .js .jsx .ts .tsx .json .css`: run `npx prettier --write "<file>"`.
+   - If extension is one of `.js .jsx .ts .tsx`: run `npx eslint --fix "<file>"`.
+   - Always `exit 0` (don't block Claude Code on lint errors) — print prettier/eslint output so the user can see it in transcript.
+
+3. **Wire it into `.claude/settings.json`** (create this file, project-scoped — not `settings.local.json`, since this should be checked into the repo and apply for all contributors on this project):
+   ```json
+   {
+     "hooks": {
+       "PostToolUse": [
+         {
+           "matcher": "Write|Edit",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format-on-write.sh"
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+   Make the script executable (`chmod +x`).
+
+4. **Verification**:
+   - `chmod +x .claude/hooks/format-on-write.sh`, then simulate a hook call manually: `echo '{"tool_input":{"file_path":"'$(pwd)'/app/page.tsx"}}' | .claude/hooks/format-on-write.sh` and confirm it runs prettier+eslint without error.
+   - Create a throwaway scratch `.md` and `.tsx` file via the Write tool in a live Claude Code turn afterward and confirm the hook fires (visible in transcript/hook output) and the file comes out formatted.
+   - Confirm a write to `references/templates/data.jsx` does NOT get touched by the hook (grep for unchanged content / no hook invocation output referencing that path).
+   - Run `npm run lint` once to make sure nothing in the new hook script itself breaks the existing (expected) lint state.
