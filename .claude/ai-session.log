@@ -49,3 +49,15 @@
 {"file":"components/home.tsx","plus":0,"minus":0,"update":1,"ts":"2026-10-20T17:19:21.923Z"}
 {"file":"components/home.tsx","plus":0,"minus":0,"update":1,"ts":"2026-10-20T17:19:23.374Z"}
 {"file":"components/home.tsx","plus":0,"minus":0,"update":1,"ts":"2026-10-20T17:19:24.741Z"}
+{"file":"specs/03-about-page-contacto.md","plus":93,"minus":0,"update":0,"ts":"2026-10-20T17:55:00.376Z"}
+{"file":"app/api/contacto/route.ts","plus":69,"minus":0,"update":0,"ts":"2026-10-20T18:27:39.469Z"}
+{"file":"components/about.tsx","plus":233,"minus":0,"update":0,"ts":"2026-10-20T18:32:08.086Z"}
+{"file":"components/about.tsx","plus":26,"minus":0,"update":2,"ts":"2026-10-20T18:32:49.587Z"}
+{"file":"components/about.tsx","plus":54,"minus":32,"update":1,"ts":"2026-10-20T18:33:06.365Z"}
+{"file":"app/acerca-de/page.tsx","plus":5,"minus":0,"update":0,"ts":"2026-10-20T18:33:33.936Z"}
+{"file":"components/nav.tsx","plus":1,"minus":0,"update":1,"ts":"2026-10-20T18:33:54.702Z"}
+{"file":"components/nav.tsx","plus":3,"minus":0,"update":0,"ts":"2026-10-20T18:33:58.032Z"}
+{"file":"components/nav.tsx","plus":3,"minus":0,"update":0,"ts":"2026-10-20T18:34:01.689Z"}
+{"file":"app/globals.css","plus":77,"minus":0,"update":0,"ts":"2026-10-20T18:35:00.602Z"}
+{"file":".env.template","plus":3,"minus":0,"update":0,"ts":"2026-10-20T18:35:55.570Z"}
+{"file":"components/about.tsx","plus":0,"minus":0,"update":1,"ts":"2026-10-20T18:39:53.912Z"}

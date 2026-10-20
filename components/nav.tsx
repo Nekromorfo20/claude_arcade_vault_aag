@@ -47,10 +47,11 @@ export function Nav() {
     };
   }, []);
 
-  const isActive = (name: "home" | "biblioteca" | "salon" | "auth") => {
+  const isActive = (name: "home" | "biblioteca" | "salon" | "acerca-de" | "auth") => {
     if (name === "home") return pathname === "/";
     if (name === "biblioteca") return pathname === "/biblioteca" || pathname.startsWith("/juego");
     if (name === "salon") return pathname === "/salon";
+    if (name === "acerca-de") return pathname === "/acerca-de";
     return pathname === "/ingresar";
   };
 
@@ -82,6 +83,9 @@ export function Nav() {
           </Link>
           <Link href="/salon" className={isActive("salon") ? "active" : ""}>
             Salón de la Fama
+          </Link>
+          <Link href="/acerca-de" className={isActive("acerca-de") ? "active" : ""}>
+            Acerca de
           </Link>
         </div>
         <div className="spacer"></div>
@@ -123,6 +127,9 @@ export function Nav() {
         </a>
         <a className={isActive("salon") ? "active" : ""} onClick={() => go("/salon")}>
           Salón de la Fama
+        </a>
+        <a className={isActive("acerca-de") ? "active" : ""} onClick={() => go("/acerca-de")}>
+          Acerca de
         </a>
         <a
           className={isActive("auth") ? "active" : ""}
