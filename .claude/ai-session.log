@@ -74,3 +74,11 @@
 {"file":"lib/supabase/middleware.ts","plus":31,"minus":0,"update":0,"ts":"2026-10-29T18:08:32.404Z"}
 {"file":"middleware.ts","plus":12,"minus":0,"update":0,"ts":"2026-10-29T18:08:59.308Z"}
 {"file":"app/api/supabase-healthcheck/route.ts","plus":13,"minus":0,"update":0,"ts":"2026-10-29T18:10:16.717Z"}
+{"file":"specs/05-juego-asteroides.md","plus":105,"minus":0,"update":0,"ts":"2026-10-29T22:28:26.124Z"}
+{"file":"lib/data.ts","plus":11,"minus":0,"update":0,"ts":"2026-10-29T22:35:09.649Z"}
+{"file":"components/games/asteroids-player.tsx","plus":824,"minus":0,"update":0,"ts":"2026-10-29T22:36:43.242Z"}
+{"file":"app/juego/[id]/jugar/page.tsx","plus":5,"minus":0,"update":0,"ts":"2026-10-29T22:39:47.959Z"}
+{"file":"components/games/asteroids-player.tsx","plus":3,"minus":0,"update":1,"ts":"2026-10-29T22:45:13.473Z"}
+{"file":"components/games/asteroids-player.tsx","plus":0,"minus":5,"update":0,"ts":"2026-10-29T22:45:18.783Z"}
+{"file":"components/games/asteroids-player.tsx","plus":0,"minus":1,"update":0,"ts":"2026-10-29T22:45:30.237Z"}
+{"file":"components/games/asteroids-player.tsx","plus":0,"minus":1,"update":0,"ts":"2026-10-29T22:45:35.248Z"}
