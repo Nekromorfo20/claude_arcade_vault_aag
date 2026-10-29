@@ -68,3 +68,9 @@
 {"file":".claude/settings.json","plus":15,"minus":0,"update":0,"ts":"2026-10-20T21:59:12.012Z"}
 {"file":".claude/hooks/format-on-write.sh","plus":5,"minus":0,"update":0,"ts":"2026-10-20T22:28:01.594Z"}
 {"file":"demos/Demo.tsx","plus":1,"minus":4,"update":0,"ts":"2026-10-20T22:35:20.057Z"}
+{"file":"specs/04-integracion-supabase.md","plus":80,"minus":0,"update":0,"ts":"2026-10-29T17:43:55.908Z"}
+{"file":"lib/supabase/client.ts","plus":8,"minus":0,"update":0,"ts":"2026-10-29T18:07:52.403Z"}
+{"file":"lib/supabase/server.ts","plus":28,"minus":0,"update":0,"ts":"2026-10-29T18:08:16.654Z"}
+{"file":"lib/supabase/middleware.ts","plus":31,"minus":0,"update":0,"ts":"2026-10-29T18:08:32.404Z"}
+{"file":"middleware.ts","plus":12,"minus":0,"update":0,"ts":"2026-10-29T18:08:59.308Z"}
+{"file":"app/api/supabase-healthcheck/route.ts","plus":13,"minus":0,"update":0,"ts":"2026-10-29T18:10:16.717Z"}
