@@ -1,6 +1,6 @@
 # 05 - Juego Asteroides
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01
 **Fecha:** 2026-10-29
 
@@ -70,21 +70,21 @@ El estado interno del juego (score, lives, level, asteroides, balas, partículas
 
 ## Criterios de aceptación
 
-- [ ] `GAMES` en `lib/data.ts` incluye la entrada `asteroides` (categoría `SHOOTER`) además de la entrada `rocas` ya existente, sin eliminarla.
-- [ ] `/juego/asteroides` muestra el detalle del juego usando el `GameDetail` genérico ya existente, sin cambios en ese componente.
-- [ ] `/juego/asteroides/jugar` renderiza `AsteroidsPlayer`, no el `GamePlayer` genérico; cualquier otro juego (ej. `/juego/caida/jugar`) sigue renderizando `GamePlayer` sin cambios de comportamiento.
-- [ ] La nave se controla con `←`/`→` (rotar) y `↑` (propulsar), y se dispara con `Espacio`, igual que el juego original; las flechas y espacio no provocan scroll de la página mientras se juega.
-- [ ] Los asteroides grandes se destruyen y se dividen en medianos, y los medianos en pequeños, sumando 20/50/100 puntos respectivamente, igual que en `game.js` original.
-- [ ] El power-up de triple disparo aparece según la misma probabilidad/garantía que el original (`POWERUP_DROP_CHANCE`, garantizado a las 5 destrucciones sin drop) y su indicador "3x" se ve dentro del canvas.
-- [ ] El HUD superior de React (Jugador/Puntuación/Vidas/Nivel) refleja el estado real del juego en curso, no valores simulados.
-- [ ] El botón PAUSA detiene visualmente el juego (nada se mueve) y lo reanuda sin saltos de posición al continuar.
-- [ ] Al perder las 3 vidas, se abre automáticamente el modal "FIN DEL JUEGO" con la puntuación final correcta, sin necesidad de presionar FIN.
-- [ ] El botón FIN también permite terminar la partida manualmente en cualquier momento, abriendo el mismo modal con la puntuación acumulada hasta ese punto.
-- [ ] Guardar la puntuación desde el modal agrega un registro a `localStorage` bajo la clave `av_scores` con `{ game: "asteroides", score, name }`, igual que el flujo existente.
-- [ ] El botón SALIR navega a `/juego/asteroides` y no deja el loop del juego corriendo en segundo plano (sin errores de "setState en componente desmontado" en consola).
-- [ ] El canvas se ve escalado al ancho del contenedor `crt-screen` manteniendo la proporción 800:600, tanto en desktop como en una ventana angosta.
-- [ ] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
-- [ ] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx` y `references/started-games/**`.
+- [X] `GAMES` en `lib/data.ts` incluye la entrada `asteroides` (categoría `SHOOTER`) además de la entrada `rocas` ya existente, sin eliminarla.
+- [X] `/juego/asteroides` muestra el detalle del juego usando el `GameDetail` genérico ya existente, sin cambios en ese componente.
+- [X] `/juego/asteroides/jugar` renderiza `AsteroidsPlayer`, no el `GamePlayer` genérico; cualquier otro juego (ej. `/juego/caida/jugar`) sigue renderizando `GamePlayer` sin cambios de comportamiento.
+- [X] La nave se controla con `←`/`→` (rotar) y `↑` (propulsar), y se dispara con `Espacio`, igual que el juego original; las flechas y espacio no provocan scroll de la página mientras se juega.
+- [X] Los asteroides grandes se destruyen y se dividen en medianos, y los medianos en pequeños, sumando 20/50/100 puntos respectivamente, igual que en `game.js` original.
+- [X] El power-up de triple disparo aparece según la misma probabilidad/garantía que el original (`POWERUP_DROP_CHANCE`, garantizado a las 5 destrucciones sin drop) y su indicador "3x" se ve dentro del canvas.
+- [X] El HUD superior de React (Jugador/Puntuación/Vidas/Nivel) refleja el estado real del juego en curso, no valores simulados.
+- [X] El botón PAUSA detiene visualmente el juego (nada se mueve) y lo reanuda sin saltos de posición al continuar.
+- [X] Al perder las 3 vidas, se abre automáticamente el modal "FIN DEL JUEGO" con la puntuación final correcta, sin necesidad de presionar FIN.
+- [X] El botón FIN también permite terminar la partida manualmente en cualquier momento, abriendo el mismo modal con la puntuación acumulada hasta ese punto.
+- [X] Guardar la puntuación desde el modal agrega un registro a `localStorage` bajo la clave `av_scores` con `{ game: "asteroides", score, name }`, igual que el flujo existente.
+- [X] El botón SALIR navega a `/juego/asteroides` y no deja el loop del juego corriendo en segundo plano (sin errores de "setState en componente desmontado" en consola).
+- [X] El canvas se ve escalado al ancho del contenedor `crt-screen` manteniendo la proporción 800:600, tanto en desktop como en una ventana angosta.
+- [X] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
+- [X] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx` y `references/started-games/**`.
 
 ## Decisiones tomadas y descartadas
 

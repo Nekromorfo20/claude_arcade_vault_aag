@@ -1,6 +1,6 @@
 # 04 - Integración Base de Supabase (BD + Auth)
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01
 **Fecha:** 2026-10-29
 
@@ -51,17 +51,17 @@ No se introduce modelo de datos nuevo ni se crean tablas, migraciones ni políti
 
 ## Criterios de aceptación
 
-- [ ] `npm install` deja `@supabase/supabase-js` y `@supabase/ssr` en `package.json`/`package-lock.json`.
-- [ ] `lib/supabase/client.ts`, `lib/supabase/server.ts` y `lib/supabase/middleware.ts` existen y exportan sus respectivas factories de cliente.
-- [ ] `middleware.ts` en la raíz invoca `updateSession` en cada request no estática.
-- [ ] `.env.example` incluye `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` con placeholders.
-- [ ] `.env.local` contiene los valores reales de esas dos variables para el proyecto `jkmqjfliuqbqazakqdsq`, y `.env.local` sigue ignorado por git (`git check-ignore .env.local` confirma que está ignorado).
-- [ ] `GET /api/supabase-healthcheck` responde `200 { ok: true }` con `npm run dev` corriendo.
-- [ ] La confirmación de email está deshabilitada en el proyecto Supabase (un `signUp` de prueba permite iniciar sesión sin click en link de confirmación) — verificable manualmente desde el dashboard o vía una llamada de prueba.
-- [ ] No se crea ninguna tabla, migración ni política RLS nueva (`mcp__supabase__list_tables` sigue devolviendo la lista vacía o sin cambios respecto a antes de este spec).
-- [ ] `components/auth.tsx`/`auth.jsx` no se modifica — sigue usando `localStorage` (`av_user`) sin cambios.
-- [ ] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
-- [ ] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx`.
+- [X] `npm install` deja `@supabase/supabase-js` y `@supabase/ssr` en `package.json`/`package-lock.json`.
+- [X] `lib/supabase/client.ts`, `lib/supabase/server.ts` y `lib/supabase/middleware.ts` existen y exportan sus respectivas factories de cliente.
+- [X] `middleware.ts` en la raíz invoca `updateSession` en cada request no estática.
+- [X] `.env.example` incluye `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` con placeholders.
+- [X] `.env.local` contiene los valores reales de esas dos variables para el proyecto `jkmqjfliuqbqazakqdsq`, y `.env.local` sigue ignorado por git (`git check-ignore .env.local` confirma que está ignorado).
+- [X] `GET /api/supabase-healthcheck` responde `200 { ok: true }` con `npm run dev` corriendo.
+- [X] La confirmación de email está deshabilitada en el proyecto Supabase (un `signUp` de prueba permite iniciar sesión sin click en link de confirmación) — verificable manualmente desde el dashboard o vía una llamada de prueba.
+- [X] No se crea ninguna tabla, migración ni política RLS nueva (`mcp__supabase__list_tables` sigue devolviendo la lista vacía o sin cambios respecto a antes de este spec).
+- [X] `components/auth.tsx`/`auth.jsx` no se modifica — sigue usando `localStorage` (`av_user`) sin cambios.
+- [X] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
+- [X] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx`.
 
 ## Decisiones tomadas y descartadas
 
