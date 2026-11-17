@@ -1,6 +1,6 @@
 # 03 - About Page y Contacto
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01, SPEC 02
 **Fecha:** 2026-10-20
 
@@ -64,18 +64,18 @@ Este payload viaja del cliente (`components/about.tsx`) al `POST /api/contacto` 
 
 ## Criterios de aceptación
 
-- [ ] `/acerca-de` renderiza el hero "Acerca de Arcade Vault" con los 3 highlights, el divider animado, y la sección de contacto, visualmente equivalente a `references/templates/home-about/arcade-vault-standalone.html`.
-- [ ] Las secciones marcadas con `reveal` en el prototipo (`about-divider`, `about-contact`) aparecen con la animación de entrada al hacer scroll.
-- [ ] Si se intenta enviar el formulario con nombre, email o mensaje vacío, se dispara el efecto `shake` y no se hace ninguna llamada de red.
-- [ ] Si se envía el formulario con un email de formato inválido (ej. `"abc"`), el servidor responde con error y la UI lo muestra sin perder los datos escritos.
-- [ ] Al enviar el formulario con datos válidos y Resend configurado correctamente, el usuario recibe el correo en `CONTACT_TO_EMAIL` con asunto `Nuevo mensaje de contacto — {nombre}` y el cuerpo contiene nombre, email y mensaje.
-- [ ] Mientras la petición a `/api/contacto` está en curso, el botón de envío muestra estado "enviando" y está deshabilitado.
-- [ ] Al completarse el envío con éxito, se muestra el bloque `terminal-success` con el mensaje de confirmación, igual que en el prototipo.
-- [ ] Si la llamada a Resend falla (ej. API key inválida), se muestra un bloque de error con el mismo estilo terminal, y el formulario permite reintentar sin perder los datos escritos.
-- [ ] El Nav muestra "Acerca de" como entrada separada en desktop y en el panel móvil, resaltada como activa en `/acerca-de`.
-- [ ] `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y `CONTACT_FROM_EMAIL` están documentadas en `.env.example`.
-- [ ] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
-- [ ] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx`.
+- [X] `/acerca-de` renderiza el hero "Acerca de Arcade Vault" con los 3 highlights, el divider animado, y la sección de contacto, visualmente equivalente a `references/templates/home-about/arcade-vault-standalone.html`.
+- [X] Las secciones marcadas con `reveal` en el prototipo (`about-divider`, `about-contact`) aparecen con la animación de entrada al hacer scroll.
+- [X] Si se intenta enviar el formulario con nombre, email o mensaje vacío, se dispara el efecto `shake` y no se hace ninguna llamada de red.
+- [X] Si se envía el formulario con un email de formato inválido (ej. `"abc"`), el servidor responde con error y la UI lo muestra sin perder los datos escritos.
+- [X] Al enviar el formulario con datos válidos y Resend configurado correctamente, el usuario recibe el correo en `CONTACT_TO_EMAIL` con asunto `Nuevo mensaje de contacto — {nombre}` y el cuerpo contiene nombre, email y mensaje.
+- [X] Mientras la petición a `/api/contacto` está en curso, el botón de envío muestra estado "enviando" y está deshabilitado.
+- [X] Al completarse el envío con éxito, se muestra el bloque `terminal-success` con el mensaje de confirmación, igual que en el prototipo.
+- [X] Si la llamada a Resend falla (ej. API key inválida), se muestra un bloque de error con el mismo estilo terminal, y el formulario permite reintentar sin perder los datos escritos.
+- [X] El Nav muestra "Acerca de" como entrada separada en desktop y en el panel móvil, resaltada como activa en `/acerca-de`.
+- [X] `RESEND_API_KEY`, `CONTACT_TO_EMAIL` y `CONTACT_FROM_EMAIL` están documentadas en `.env.example`.
+- [X] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
+- [X] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx`.
 
 ## Decisiones tomadas y descartadas
 

@@ -91,20 +91,20 @@ Estado de sesión y puntuaciones (sin modelo de servidor, solo forma de los dato
 
 ## Criterios de aceptación
 
-- [ ] `app/page.tsx` renderiza la Biblioteca (ya no es el boilerplate de `create-next-app`).
-- [ ] Las rutas `/`, `/juego/[id]`, `/juego/[id]/jugar`, `/ingresar`, `/salon` existen y renderizan sin error para al menos un `id` válido de `GAMES`.
-- [ ] `/juego/id-invalido` responde con `notFound()` (página 404) en vez de crashear.
-- [ ] La búsqueda y el filtro por categoría en Biblioteca funcionan como en el prototipo (filtran el grid en tiempo real).
-- [ ] El detalle de un juego muestra su info, stats y un leaderboard generado con `seededScores`.
-- [ ] En el reproductor: el puntaje sube solo mientras no está en pausa ni terminado, pausa detiene el incremento, "FIN" abre el modal de fin de juego con la puntuación final.
-- [ ] Guardar puntuación en el modal de fin de juego agrega un registro a `localStorage["av_scores"]` y muestra el estado "guardado".
-- [ ] Login (con usuario) y "jugar como invitado" en `/ingresar` ambos redirigen a `/` y actualizan el estado de sesión visible en `Nav` (nombre de usuario o botón "Iniciar Sesión").
-- [ ] Cerrar sesión desde `Nav` borra `av_user` de `localStorage` y vuelve a mostrar el botón "Iniciar Sesión".
-- [ ] El Salón de la Fama permite cambiar de tab por juego y muestra podio + tabla; si hay sesión activa, muestra la fila "tu mejor marca".
-- [ ] El panel de navegación móvil (hamburguesa) abre/cierra y refleja la ruta activa.
-- [ ] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
-- [ ] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx`.
-- [ ] La estética neón-pixel (colores, tipografía `pixel`/`mono`, efectos CRT/scanline) es visualmente equivalente a `references/templates/Arcade Vault.html` al compararlos lado a lado.
+- [X] `app/page.tsx` renderiza la Biblioteca (ya no es el boilerplate de `create-next-app`).
+- [X] Las rutas `/`, `/juego/[id]`, `/juego/[id]/jugar`, `/ingresar`, `/salon` existen y renderizan sin error para al menos un `id` válido de `GAMES`.
+- [X] `/juego/id-invalido` responde con `notFound()` (página 404) en vez de crashear.
+- [X] La búsqueda y el filtro por categoría en Biblioteca funcionan como en el prototipo (filtran el grid en tiempo real).
+- [X] El detalle de un juego muestra su info, stats y un leaderboard generado con `seededScores`.
+- [X] En el reproductor: el puntaje sube solo mientras no está en pausa ni terminado, pausa detiene el incremento, "FIN" abre el modal de fin de juego con la puntuación final.
+- [X] Guardar puntuación en el modal de fin de juego agrega un registro a `localStorage["av_scores"]` y muestra el estado "guardado".
+- [X] Login (con usuario) y "jugar como invitado" en `/ingresar` ambos redirigen a `/` y actualizan el estado de sesión visible en `Nav` (nombre de usuario o botón "Iniciar Sesión").
+- [X] Cerrar sesión desde `Nav` borra `av_user` de `localStorage` y vuelve a mostrar el botón "Iniciar Sesión".
+- [X] El Salón de la Fama permite cambiar de tab por juego y muestra podio + tabla; si hay sesión activa, muestra la fila "tu mejor marca".
+- [X] El panel de navegación móvil (hamburguesa) abre/cierra y refleja la ruta activa.
+- [X] `npm run build` completa sin errores en `app/`, `components/` y `lib/`.
+- [X] `npm run lint` no reporta errores nuevos fuera de los ya existentes en `references/templates/*.jsx`.
+- [X] La estética neón-pixel (colores, tipografía `pixel`/`mono`, efectos CRT/scanline) es visualmente equivalente a `references/templates/Arcade Vault.html` al compararlos lado a lado.
 
 ## Decisiones tomadas y descartadas
 

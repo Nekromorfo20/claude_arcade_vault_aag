@@ -2,22 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Game } from "@/lib/data";
-import { readAvUser } from "@/components/nav";
-interface AvScoreEntry {
-  game: string;
-  score: number;
-  name: string;
-  at: number;
-}
-function saveAvScore(entry: Omit<AvScoreEntry, "at">) {
-  try {
-    const all = JSON.parse(localStorage.getItem("av_scores") || "[]");
-    all.push({ ...entry, at: Date.now() });
-    localStorage.setItem("av_scores", JSON.stringify(all));
-  } catch {
-    // ignore storage errors
-  }
-}
+import { createClient } from "@/lib/supabase/client";
+import { saveScore } from "@/lib/scores";
 // ── Utils ─────────────────────────────────────────────────────────────────────
 const W = 800;
 const H = 600;
@@ -580,8 +566,25 @@ export function AsteroidsPlayer({ game }: { game: Game }) {
   const [level, setLevel] = useState(1);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
-  const [name, setName] = useState(() => readAvUser()?.name ?? "INVITADO");
+  const [name, setName] = useState("INVITADO");
+  const [userId, setUserId] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return;
+      setUserId(data.user.id);
+      supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", data.user.id)
+        .maybeSingle()
+        .then(({ data: profile }) => {
+          if (profile) setName(profile.username);
+        });
+    });
+  }, []);
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -624,9 +627,17 @@ export function AsteroidsPlayer({ game }: { game: Game }) {
     setPaused(false);
     setOver(false);
     setSaved(false);
+    setSaving(false);
   };
   const exit = () => {
     router.push(`/juego/${game.id}`);
+  };
+  const confirmSave = async () => {
+    if (!userId) return;
+    setSaving(true);
+    await saveScore(game.id, userId, score);
+    setSaving(false);
+    setSaved(true);
   };
   return (
     <div className="av-player fade-in">
@@ -714,27 +725,27 @@ export function AsteroidsPlayer({ game }: { game: Game }) {
             <h2>FIN DEL JUEGO</h2>
             <div className="final-label">PUNTUACIÓN FINAL</div>
             <div className="final">{score.toLocaleString("es-ES")}</div>
-            {!saved ? (
+            {saved ? (
+              <div className="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
+            ) : userId ? (
               <div className="input-row">
-                <input
-                  value={name}
-                  onChange={(e) =>
-                    setName(e.target.value.toUpperCase().slice(0, 10))
-                  }
-                  placeholder="TUS INICIALES"
-                />
                 <button
                   className="btn yellow"
-                  onClick={() => {
-                    saveAvScore({ game: game.id, score, name });
-                    setSaved(true);
-                  }}
+                  disabled={saving}
+                  onClick={confirmSave}
                 >
-                  GUARDAR PUNTUACIÓN
+                  {saving ? "GUARDANDO..." : "GUARDAR PUNTUACIÓN"}
                 </button>
               </div>
             ) : (
-              <div className="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
+              <div className="input-row">
+                <button
+                  className="btn yellow"
+                  onClick={() => router.push("/ingresar")}
+                >
+                  INICIAR SESIÓN PARA GUARDAR
+                </button>
+              </div>
             )}
             <div className="actions">
               <button className="btn" onClick={restart}>
