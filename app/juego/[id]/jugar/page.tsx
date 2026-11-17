@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { GAMES } from "@/lib/data";
 import { GamePlayer } from "@/components/game-player";
 import { AsteroidsPlayer } from "@/components/games/asteroids-player";
+import { TetrisPlayer } from "@/components/games/tetris-player";
 async function GamePlayerContent({
   params,
 }: {
@@ -13,6 +14,9 @@ async function GamePlayerContent({
   if (!game) notFound();
   if (game.id === "asteroides") {
     return <AsteroidsPlayer game={game} />;
+  }
+  if (game.id === "tetris") {
+    return <TetrisPlayer game={game} />;
   }
   return <GamePlayer game={game} />;
 }
