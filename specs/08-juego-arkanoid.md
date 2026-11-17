@@ -1,6 +1,6 @@
 # 08 - Juego Arkanoid
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01, SPEC 05, SPEC 06
 **Fecha:** 2026-11-17
 
@@ -93,18 +93,18 @@ Los textos `short`/`long` exactos se redactan al implementar, siguiendo el tono 
 
 ## Criterios de aceptación
 
-- [ ] La entrada `arkanoid` aparece en `/biblioteca` (vista grid y vista tabla) con cover `cover-arkanoid`, sin alterar la entrada mock `bloque-buster`.
-- [ ] `ArkanoidEngine` no escribe a canvas fuera de su propio dibujo de juego (bloques/pelota/paleta/explosiones) — el game over, la victoria y el selector de nivel en pausa ya no se dibujan dentro del canvas; todo pasa por `onStatsChange`/`onStateChange` hacia React.
-- [ ] `/juego/arkanoid/jugar` renderiza `ArkanoidPlayer` y permite jugar una partida completa: mover la paleta con mouse y con `←`/`→`, rebotar la pelota en paredes/paleta, romper bloques con animación de explosión y sonido, y progresar por los 5 niveles con velocidad incremental.
-- [ ] El botón PAUSA y el atajo `KeyP`/`Escape` detienen y reanudan el loop sin perder el estado de bloques/pelota/paleta, y muestran el selector de nivel (botones 1–5, nivel activo resaltado) como overlay de React que permite saltar de nivel.
-- [ ] Al perder la tercera vida se abre automáticamente el modal "FIN DEL JUEGO"; al limpiar los bloques del nivel 5 se abre automáticamente el modal "¡GANASTE!" — ambos casos probados manualmente.
-- [ ] Estando autenticado, "GUARDAR PUNTUACIÓN" inserta una fila real en la tabla `scores` de Supabase con `game_id: "arkanoid"`, tanto desde el modal de derrota como desde el de victoria.
-- [ ] Sin sesión, el modal de fin de partida ofrece ir a `/ingresar` en vez de un botón de guardado.
-- [ ] `/salon` muestra un tab "ARKANOID" adicional (además de "ASTEROIDES" y "TETRIS") con el leaderboard real de ese juego.
-- [ ] La vista de tabla en `/biblioteca` muestra mejor puntuación/partidas jugadas en vivo para `arkanoid` (no valores mock), igual que ya ocurre para `asteroides`/`tetris`.
-- [ ] Los assets (`spritesheet-breakout.png`, `ball-bounce.mp3`, `break-sound.mp3`) se sirven desde `public/arkanoid/` y no rompen el render en servidor (sin errores de `Image`/`Audio is not defined` durante `npm run build`).
-- [ ] `mcp__supabase__get_advisors(type: "security")` no reporta advertencias nuevas tras aplicar la migración de seed.
-- [ ] `npm run lint && npm run build` pasan sin errores sobre el código real del proyecto (se excluyen, como ya es convención del repo, los errores preexistentes de `references/templates/*.jsx` y `references/started-games/**`).
+- [X] La entrada `arkanoid` aparece en `/biblioteca` (vista grid y vista tabla) con cover `cover-arkanoid`, sin alterar la entrada mock `bloque-buster`.
+- [X] `ArkanoidEngine` no escribe a canvas fuera de su propio dibujo de juego (bloques/pelota/paleta/explosiones) — el game over, la victoria y el selector de nivel en pausa ya no se dibujan dentro del canvas; todo pasa por `onStatsChange`/`onStateChange` hacia React.
+- [X] `/juego/arkanoid/jugar` renderiza `ArkanoidPlayer` y permite jugar una partida completa: mover la paleta con mouse y con `←`/`→`, rebotar la pelota en paredes/paleta, romper bloques con animación de explosión y sonido, y progresar por los 5 niveles con velocidad incremental.
+- [X] El botón PAUSA y el atajo `KeyP`/`Escape` detienen y reanudan el loop sin perder el estado de bloques/pelota/paleta, y muestran el selector de nivel (botones 1–5, nivel activo resaltado) como overlay de React que permite saltar de nivel.
+- [X] Al perder la tercera vida se abre automáticamente el modal "FIN DEL JUEGO"; al limpiar los bloques del nivel 5 se abre automáticamente el modal "¡GANASTE!" — ambos casos probados manualmente.
+- [X] Estando autenticado, "GUARDAR PUNTUACIÓN" inserta una fila real en la tabla `scores` de Supabase con `game_id: "arkanoid"`, tanto desde el modal de derrota como desde el de victoria.
+- [X] Sin sesión, el modal de fin de partida ofrece ir a `/ingresar` en vez de un botón de guardado.
+- [X] `/salon` muestra un tab "ARKANOID" adicional (además de "ASTEROIDES" y "TETRIS") con el leaderboard real de ese juego.
+- [X] La vista de tabla en `/biblioteca` muestra mejor puntuación/partidas jugadas en vivo para `arkanoid` (no valores mock), igual que ya ocurre para `asteroides`/`tetris`.
+- [X] Los assets (`spritesheet-breakout.png`, `ball-bounce.mp3`, `break-sound.mp3`) se sirven desde `public/arkanoid/` y no rompen el render en servidor (sin errores de `Image`/`Audio is not defined` durante `npm run build`).
+- [X] `mcp__supabase__get_advisors(type: "security")` no reporta advertencias nuevas tras aplicar la migración de seed.
+- [X] `npm run lint && npm run build` pasan sin errores sobre el código real del proyecto (se excluyen, como ya es convención del repo, los errores preexistentes de `references/templates/*.jsx` y `references/started-games/**`).
 
 ## Decisiones tomadas y descartadas
 
