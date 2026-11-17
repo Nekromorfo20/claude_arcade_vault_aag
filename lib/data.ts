@@ -118,6 +118,17 @@ export const GAMES: Game[] = [
     plays: "0",
   },
   {
+    id: "serpiente",
+    title: "SERPIENTE",
+    short: "Clásico de grilla: comé, crecé, no te choques.",
+    long: "El clásico atemporal. Guiá a la serpiente por la grilla para devorar fruta tras fruta, creciendo con cada bocado. Un giro en falso contra el borde o contra tu propia cola termina la partida. La velocidad sube con cada nivel — sobrevivir se vuelve cuestión de reflejos.",
+    cat: "ARCADE",
+    cover: "cover-snake",
+    color: "green",
+    best: 0,
+    plays: "0",
+  },
+  {
     id: "ranaria",
     title: "RANARIA",
     short: "Cruza la autopista de pixeles.",

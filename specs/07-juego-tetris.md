@@ -1,6 +1,6 @@
 # 07 - Juego Tetris
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01, SPEC 05, SPEC 06
 **Fecha:** 2026-11-17
 
@@ -85,17 +85,17 @@ Los textos `short`/`long` exactos se redactan al implementar, siguiendo el tono 
 
 ## Criterios de aceptación
 
-- [ ] La entrada `tetris` aparece en `/biblioteca` (vista grid y vista tabla) con cover `cover-tetro`, sin alterar la entrada mock `caida`.
-- [ ] `TetrisEngine` no escribe a `textContent`/`classList`/DOM directamente en ningún punto — todo cambio de HUD o de estado pasa por `onStatsChange`/`onStateChange`.
-- [ ] `/juego/tetris/jugar` renderiza `TetrisPlayer` y permite jugar una partida completa: mover piezas, rotar con wall kicks, soft drop, hard drop, ghost piece visible, vista previa de la siguiente pieza, limpieza de líneas y aumento de nivel/velocidad cada 10 líneas.
-- [ ] El botón PAUSA y el atajo de teclado `KeyP` detienen y reanudan el loop sin perder el estado del tablero.
-- [ ] Cuando una pieza nueva colisiona al generarse, se abre automáticamente el modal "FIN DEL JUEGO" con la puntuación final.
-- [ ] Estando autenticado, "GUARDAR PUNTUACIÓN" inserta una fila real en la tabla `scores` de Supabase con `game_id: "tetris"`.
-- [ ] Sin sesión, el modal de fin de partida ofrece ir a `/ingresar` en vez de un botón de guardado.
-- [ ] `/salon` muestra un tab "TETRIS" adicional (además de "ASTEROIDES") con el leaderboard real de ese juego.
-- [ ] La vista de tabla en `/biblioteca` muestra mejor puntuación/partidas jugadas en vivo para `tetris` (no valores mock), igual que ya ocurre para `asteroides`.
-- [ ] `mcp__supabase__get_advisors(type: "security")` no reporta advertencias nuevas tras aplicar la migración de seed.
-- [ ] `npm run lint && npx tsc --noEmit` pasan sin errores sobre el código real del proyecto (se excluyen, como ya es convención del repo, los errores preexistentes de `references/templates/*.jsx`).
+- [X] La entrada `tetris` aparece en `/biblioteca` (vista grid y vista tabla) con cover `cover-tetro`, sin alterar la entrada mock `caida`.
+- [X] `TetrisEngine` no escribe a `textContent`/`classList`/DOM directamente en ningún punto — todo cambio de HUD o de estado pasa por `onStatsChange`/`onStateChange`.
+- [X] `/juego/tetris/jugar` renderiza `TetrisPlayer` y permite jugar una partida completa: mover piezas, rotar con wall kicks, soft drop, hard drop, ghost piece visible, vista previa de la siguiente pieza, limpieza de líneas y aumento de nivel/velocidad cada 10 líneas.
+- [X] El botón PAUSA y el atajo de teclado `KeyP` detienen y reanudan el loop sin perder el estado del tablero.
+- [X] Cuando una pieza nueva colisiona al generarse, se abre automáticamente el modal "FIN DEL JUEGO" con la puntuación final.
+- [X] Estando autenticado, "GUARDAR PUNTUACIÓN" inserta una fila real en la tabla `scores` de Supabase con `game_id: "tetris"`.
+- [X] Sin sesión, el modal de fin de partida ofrece ir a `/ingresar` en vez de un botón de guardado.
+- [X] `/salon` muestra un tab "TETRIS" adicional (además de "ASTEROIDES") con el leaderboard real de ese juego.
+- [X] La vista de tabla en `/biblioteca` muestra mejor puntuación/partidas jugadas en vivo para `tetris` (no valores mock), igual que ya ocurre para `asteroides`.
+- [X] `mcp__supabase__get_advisors(type: "security")` no reporta advertencias nuevas tras aplicar la migración de seed.
+- [X] `npm run lint && npx tsc --noEmit` pasan sin errores sobre el código real del proyecto (se excluyen, como ya es convención del repo, los errores preexistentes de `references/templates/*.jsx`).
 
 ## Decisiones tomadas y descartadas
 
