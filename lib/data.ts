@@ -96,6 +96,17 @@ export const GAMES: Game[] = [
     plays: "0",
   },
   {
+    id: "tetris",
+    title: "TETRIS",
+    short: "Encaja las piezas antes de que el techo te aplaste.",
+    long: "Piezas geométricas descienden desde la oscuridad. Rótalas, encástralas y limpia líneas para sobrevivir. La velocidad aumenta sin piedad cada 10 líneas.",
+    cat: "PUZZLE",
+    cover: "cover-tetro",
+    color: "magenta",
+    best: 0,
+    plays: "0",
+  },
+  {
     id: "ranaria",
     title: "RANARIA",
     short: "Cruza la autopista de pixeles.",

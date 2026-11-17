@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { GAMES, CATS } from "@/lib/data";
 import { GameCard } from "@/components/game-card";
 import { getGameStats } from "@/lib/scores";
-const REAL_GAME_IDS = ["asteroides"];
+const REAL_GAME_IDS = ["asteroides", "tetris"];
 export function Library() {
   const router = useRouter();
   const [q, setQ] = useState("");
