@@ -107,6 +107,17 @@ export const GAMES: Game[] = [
     plays: "0",
   },
   {
+    id: "arkanoid",
+    title: "ARKANOID",
+    short: "Rebota la pelota y destruye muros de neón.",
+    long: "Controla una paleta con el mouse o el teclado y rebota un núcleo de energía para pulverizar 5 niveles de muros de bloques cromáticos, cada uno más veloz que el anterior. Tres vidas es todo lo que tenés.",
+    cat: "ARCADE",
+    cover: "cover-arkanoid",
+    color: "yellow",
+    best: 0,
+    plays: "0",
+  },
+  {
     id: "ranaria",
     title: "RANARIA",
     short: "Cruza la autopista de pixeles.",

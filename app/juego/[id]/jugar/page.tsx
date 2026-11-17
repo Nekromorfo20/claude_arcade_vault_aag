@@ -4,6 +4,7 @@ import { GAMES } from "@/lib/data";
 import { GamePlayer } from "@/components/game-player";
 import { AsteroidsPlayer } from "@/components/games/asteroids-player";
 import { TetrisPlayer } from "@/components/games/tetris-player";
+import { ArkanoidPlayer } from "@/components/games/arkanoid-player";
 async function GamePlayerContent({
   params,
 }: {
@@ -17,6 +18,9 @@ async function GamePlayerContent({
   }
   if (game.id === "tetris") {
     return <TetrisPlayer game={game} />;
+  }
+  if (game.id === "arkanoid") {
+    return <ArkanoidPlayer game={game} />;
   }
   return <GamePlayer game={game} />;
 }
