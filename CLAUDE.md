@@ -4,47 +4,102 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-**Arcade Vault** (`Arcade Vault` in `references/templates/Arcade Vault.html`) is a retro-neon arcade platform where users play browser mini-games and compete on a leaderboard ("Salón de la Fama"). Copy and UI strings are in Spanish.
+**Arcade Vault** is a retro-neon arcade platform where users play browser mini-games and compete on a leaderboard ("Salón de la Fama"). Copy and UI strings are in Spanish — write new UI copy, spec files, and code comments in Spanish too.
 
-The repo currently is an unmodified `create-next-app` scaffold (`app/page.tsx` is still the default Next.js welcome page) — the real product has not been built yet. The intended design and data model live as static HTML/JSX reference mockups in `references/templates/`, which future work should port into the Next.js `app/` directory.
+The product is built: Next.js 16 App Router + React 19, Supabase (auth + Postgres) for accounts/scores, Resend for the contact form, and four real playable games (Asteroides, Tetris, Arkanoid, Serpiente). The static prototype in `references/templates/` has already been ported and now serves only as the visual/UX reference, not as the plan.
 
-There is no test runner configured in this repo yet. `npm run lint` currently reports errors inside `references/templates/*.jsx` (undefined `React`, undefined components) — expected, since those files are CDN-React prototype code, not part of the compiled app; don't try to "fix" them into lint-clean state.
+`npm run lint` reports errors inside `references/templates/*.jsx` (undefined `React`, undefined components) — expected, since those files are CDN-React prototype code excluded from the compiled app; don't try to "fix" them into lint-clean state. There is no test runner configured; verification is `npm run lint && npm run build` plus manual play-through.
+
+## Commands
+
+- `npm run dev` — dev server (Turbopack).
+- `npm run build` / `npm start` — production build and serve.
+- `npm run lint` — ESLint (see caveat above about `references/`).
 
 ## Spec-driven workflow
 
-This project follows a spec-driven design flow using `/spec` and `/spec-impl` commands, based on https://github.com/Klerith/fernando-skills (installed via `npx skills@latest add Klerith/fernando-skills`). Prefer writing/updating a spec before implementing non-trivial features if these commands are available.
+Non-trivial features go through a spec first. Skills live in `.agents/skills/` (mirrored into `.claude/skills/`), originally based on https://github.com/Klerith/fernando-skills.
+
+- `/spec` — write a spec into `specs/NN-slug.md`, status `Borrador`.
+- `/spec-impl NN-slug` — implement an approved spec. `specs/.spec-config.yml` has `AutoCreateBranch: true`, so it creates/switches to `spec-NN-slug` without asking.
+- `/port-game` — project-specific skill (`.agents/skills/port-game/SKILL.md`) that analyzes a source game and generates a porting + Supabase-leaderboard spec following the 05/07/08/09 pattern. It only writes a spec; it never writes app code.
+- `/frontend-design` — always use it when designing or reshaping UI.
+
+Existing specs (all `Implementado`): `01` MVP visual · `02` home landing · `03` about + contacto · `04` Supabase base · `05` Asteroides · `06` leaderboard + tabla de juegos · `07` Tetris · `08` Arkanoid · `09` Serpiente.
 
 ## Architecture
 
-### Current state vs. target
+### Routes (`app/`)
 
-- `app/layout.tsx` + `app/page.tsx`: default Next.js App Router boilerplate (Geist fonts, Tailwind). Not yet reflecting the Arcade Vault UI.
-- `references/templates/`: a standalone (non-Next.js, CDN React via `React.createElement`/global `window.X` assignments, no bundler) prototype of the full app. Treat this as the design/behavior spec to translate into proper Next.js components — don't copy it verbatim (no `window.Foo = Foo` globals, no hash-based router, no CDN React idioms in the real app).
+| Route                       | Component                     | Notes                              |
+| --------------------------- | ----------------------------- | ---------------------------------- |
+| `/`                         | `components/home.tsx`         | landing                            |
+| `/biblioteca`               | `components/library.tsx`      | catalog, grid/table toggle         |
+| `/juego/[id]`               | `components/game-detail.tsx`  | detail; 404s on unknown id         |
+| `/juego/[id]/jugar`         | per-game player               | if-chain selecting the real engine |
+| `/salon`                    | `components/hall-of-fame.tsx` | top-10 per game from Supabase      |
+| `/ingresar`                 | `components/auth.tsx`         | sign in / sign up                  |
+| `/acerca-de`                | `components/about.tsx`        | about + contact form               |
+| `/api/contacto`             | route handler                 | sends mail via Resend              |
+| `/api/supabase-healthcheck` | route handler                 | session smoke test                 |
 
-### Reference prototype structure (`references/templates/`)
+see `references/implemented-games.md` when you need to check which games are implemented and how to implement new ones.
 
-The prototype is a single-page app assembled from global-scope scripts, meant to be read as a cohesive spec:
+`app/layout.tsx` loads the pixel/mono fonts (`Press_Start_2P`, `JetBrains_Mono`, `Courier_Prime`) as CSS variables, renders `Nav` inside `<Suspense>`, and the neon background/noise/footer chrome. Dynamic pages wrap their content in `<Suspense>` and `await params` (Next 16 async params).
 
-- `data.jsx` — mock data: a `GAMES` array (id, title, short/long description, category, cover art key, accent color, best score, play count) that stands in for a future games database/API.
-- `app.jsx` — root `App` component and routing. Uses a hand-rolled hash-based router (`location.hash` holds a JSON-encoded `{ name, ...params }` route object) and `localStorage` for session (`av_user`) and score persistence (`av_scores`). Routes: `biblioteca` (library/home), `detalle` (game detail), `player` (game player/runner), `auth` (login), `salon` (hall of fame / leaderboard).
-- `nav.jsx` — top nav + mobile slide-out panel, highlights active route, shows credits counter and auth state.
-- `biblioteca.jsx` — game library/browse grid.
-- `detalle.jsx` — single game detail page.
-- `reproductor.jsx` — the actual game player/runner screen.
-- `salon.jsx` — Hall of Fame / global leaderboard.
-- `auth.jsx` — login/sign-up screen.
-- `styles.css` — neon/pixel-art visual theme (CSS custom properties for neon colors: cyan, magenta, green, yellow; `pixel`/`mono` typography classes).
-- `Arcade Vault.html` — the shell that wires all the above scripts together outside of Next.js.
+`next.config.ts` enables `cacheComponents` and `partialPrefetching`, plus `experimental.agentFeedback` (which is what writes the `AGENTS.md` blocks — commit them, don't strip them).
 
-When implementing real features, map these concerns onto Next.js App Router conventions (file-based routes under `app/`, real data fetching instead of the `GAMES` mock, proper auth instead of `localStorage`), while preserving the visual language and UX flows the prototype defines.
+### Data layer
+
+- `lib/data.ts` — `GAMES` catalog array (`Game`: id, title, short, long, cat, cover, color, best, plays) plus `CATS`, `PLAYERS`, and `seededScores()`. Entries are a mix of **mock** games (visual-only placeholders like `rocas`, `serpentina`, `gloton`) and **real** games. Never rename or delete a mock entry when porting its real counterpart — add a new id alongside it.
+- `lib/scores.ts` — Supabase reads/writes: `getRealGames`, `saveScore`, `getTopScores`, `getGameStats`, `getMyBestRank`.
+- `lib/supabase/{client,server,middleware}.ts` — `@supabase/ssr` clients; `middleware.ts` at the root refreshes the session on every non-asset request.
+
+### Supabase schema (`supabase/migrations/`)
+
+- `profiles` — 1:1 with `auth.users`, holds `username` (uppercased, max 10 chars, set at sign-up).
+- `games` — real-game catalog (`id` text PK). Only real games are seeded here; mock catalog entries exist solely in `lib/data.ts`.
+- `scores` — `game_id` + `user_id` + `score`, indexed `(game_id, score desc)`.
+
+RLS is on for all three: public select, own-row insert/update. The schema is generic — **adding a game needs only an `insert into public.games (...)` migration, never new DDL.** Apply migrations with `mcp__supabase__apply_migration` and re-check `mcp__supabase__get_advisors` afterwards.
+
+### Game engine contract
+
+Every real game lives in `components/games/<id>-player.tsx` as a `"use client"` component wrapping a plain `class <Name>Engine` that owns the canvas loop. The engine never touches the DOM or React state directly — it reports out through two callbacks:
+
+```ts
+onStatsChange: (score: number, a: number, b: number) => void; // fields vary per game
+onStateChange: (state: GameState) => void; // "playing" | "paused" | "gameover" (+ "win" for Arkanoid)
+```
+
+Shared conventions:
+
+- Engines dedupe callback emissions (`lastReported*` fields) so React doesn't re-render every frame.
+- Canvas physics runs in fixed logical coordinates; CSS scales the canvas. Mouse-driven games must map coordinates through `getBoundingClientRect()`.
+- Mount `useEffect` cancels the RAF loop and removes listeners on cleanup; the `[paused]` effect resets `lastTime` on resume so no delta-time jump occurs.
+- **Score saving is always manual.** On game over, show the existing modal and let the player confirm "Guardar puntuación"; if there's no session, offer `/ingresar`. No auto-insert, no `localStorage` fallback.
+- Assets go in `public/<game>/` and need SSR guards (`typeof window !== "undefined"`) before `new Image()` / `new Audio()` — App Router renders these modules on the server.
+- Reuse existing CSS chrome (`av-player`, `player-hud`, `crt`, `crt-screen`, `modal-bd`). A game-specific stat extends the HUD row; it doesn't get a new widget.
+
+Adding a real game touches four places: `lib/data.ts` (catalog entry), `app/juego/[id]/jugar/page.tsx` (one more `if (game.id === …)` branch), `REAL_GAME_IDS` in `components/library.tsx`, and a seed migration. The if-chain is kept for minimal diffs; with four games already ported, a `Record<string, Component>` registry is worth evaluating next time.
 
 ### Styling
 
-Tailwind CSS v4 via `@tailwindcss/turbopack` (configured in `next.config.ts` as a Turbopack loader rule for `*.css`, not a `tailwind.config.js`). Dark mode is used (`dark:` variants present in `app/layout.tsx`/`app/page.tsx`).
+Tailwind CSS v4 via `@tailwindcss/turbopack` (a Turbopack loader rule in `next.config.ts`, not a `tailwind.config.js`). The real theme is hand-written CSS in `app/globals.css` (~2.8k lines): neon custom properties (`--cyan`, `--magenta`, `--green`, `--yellow`, `--gold`…), `pixel`/`mono` font vars, and all the `av-*` / `cover-*` component classes. Components mostly use these classes plus inline styles — not Tailwind utilities. Existing covers: `cover-arkanoid`, `cover-bricks`, `cover-duelo`, `cover-glot`, `cover-invaders`, `cover-rana`, `cover-rocas`, `cover-snake`, `cover-tetro`.
 
 ### TypeScript
 
 Path alias `@/*` maps to the repo root (see `tsconfig.json`).
 
-## Skills
-Always use /frontend-design to design the user interface.
+## Tooling
+
+- `.claude/hooks/format-on-write.sh` (PostToolUse on Write|Edit) runs Prettier, then ESLint `--fix` for JS/TS, then **strips all blank lines** and re-formats. Written code ends up dense with no blank lines — that's intentional, don't fight it or re-add spacing.
+- `.mcp.json` configures the **supabase** MCP server (project `jkmqjfliuqbqazakqdsq`); it's enabled in `.claude/settings.local.json`. Use it for migrations, SQL, logs, and advisors.
+- `.env.example` lists required vars: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`, `SUPABASE_DB_PASSWORD`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- `AGENTS.md` is generated by `next dev` (agentFeedback). Commit it with your work rather than deleting the blocks.
+
+## References
+
+- `references/templates/` — the original CDN-React prototype (hash router, `window.X` globals, `localStorage` session). Already ported; consult it for visual language only, never copy its idioms.
+- `references/started-games/` — source games to port (`02-asteroids`, `03-tetris`, `04-arkanoid` are all done). New sources land here.
+- `references/source-assets/` — raw sprites/audio before they're moved into `public/`.
