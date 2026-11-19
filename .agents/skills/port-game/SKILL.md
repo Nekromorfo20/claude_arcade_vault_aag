@@ -46,7 +46,7 @@ Mirá `$ARGUMENTS`:
 
 - Si ya nombra una carpeta válida de `references/started-games/` (listada en el session context), usala directamente y pasá a la Fase 1.
 - Si no, preguntá con `AskUserQuestion`: "¿De dónde viene este juego?", con estas opciones:
-  - **(a) Una carpeta de `references/started-games/` aún no portada.** Listá las carpetas del session context que todavía no aparecen en `REAL_GAME_IDS` (hoy: `03-tetris`, `04-arkanoid`).
+  - **(a) Una carpeta de `references/started-games/` aún no portada.** Calculalo en vivo contra el session context: listá las carpetas que todavía no tienen contraparte en `REAL_GAME_IDS`. Si no queda ninguna, decilo y no ofrezcas esta opción — el juego viene por (b) o (c).
   - **(b) Código que el usuario va a pegar o indicar por ruta.** Pedí la ruta del archivo o que pegue el código fuente.
   - **(c) Una descripción libre desde cero.** No hay código fuente — el motor se diseña a partir de la descripción del usuario, no se porta nada.
 

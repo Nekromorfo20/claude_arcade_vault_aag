@@ -18,10 +18,13 @@ The product is built: Next.js 16 App Router + React 19, Supabase (auth + Postgre
 
 ## Spec-driven workflow
 
-Non-trivial features go through a spec first. Skills live in `.agents/skills/` (mirrored into `.claude/skills/`), originally based on https://github.com/Klerith/fernando-skills.
+Non-trivial features go through a spec first. Skills live in `.agents/skills/` (mirrored into `.claude/skills/`), originally based on https://github.com/Klerith/fernando-skills. Subagents live in `.claude/agents/`.
+
+For a new game the full chain is `game-planner` (which game?) → `/port-game` (write the spec) → `/spec-impl` (build it). Each stage stops at its own boundary: the planner never writes a spec, and `/port-game` never writes app code.
 
 - `/spec` — write a spec into `specs/NN-slug.md`, status `Borrador`.
 - `/spec-impl NN-slug` — implement an approved spec. `specs/.spec-config.yml` has `AutoCreateBranch: true`, so it creates/switches to `spec-NN-slug` without asking.
+- `game-planner` — subagent (`.claude/agents/game-planner.md`) that decides **which** game to port next: it scores candidates against fit criteria and recommends one. Keeps memory of past suggestions in `references/game-suggestions-todo.md`. Runs before `/port-game`; it never writes specs or app code.
 - `/port-game` — project-specific skill (`.agents/skills/port-game/SKILL.md`) that analyzes a source game and generates a porting + Supabase-leaderboard spec following the 05/07/08/09 pattern. It only writes a spec; it never writes app code.
 - `/frontend-design` — always use it when designing or reshaping UI.
 
@@ -43,7 +46,7 @@ Existing specs (all `Implementado`): `01` MVP visual · `02` home landing · `03
 | `/api/contacto`             | route handler                 | sends mail via Resend              |
 | `/api/supabase-healthcheck` | route handler                 | session smoke test                 |
 
-see `references/implemented-games.md` when you need to check which games are implemented and how to implement new ones.
+see `references/implemented-games.md` when you need to check which games are implemented and how to implement new ones; `references/game-suggestions-todo.md` records which games were already evaluated as candidates and with what verdict.
 
 `app/layout.tsx` loads the pixel/mono fonts (`Press_Start_2P`, `JetBrains_Mono`, `Courier_Prime`) as CSS variables, renders `Nav` inside `<Suspense>`, and the neon background/noise/footer chrome. Dynamic pages wrap their content in `<Suspense>` and `await params` (Next 16 async params).
 
@@ -103,3 +106,4 @@ Path alias `@/*` maps to the repo root (see `tsconfig.json`).
 - `references/templates/` — the original CDN-React prototype (hash router, `window.X` globals, `localStorage` session). Already ported; consult it for visual language only, never copy its idioms.
 - `references/started-games/` — source games to port (`02-asteroids`, `03-tetris`, `04-arkanoid` are all done). New sources land here.
 - `references/source-assets/` — raw sprites/audio before they're moved into `public/`.
+- `references/game-suggestions-todo.md` — the `game-planner` subagent's memory: which games were evaluated, with what verdict and when. Read it before proposing a next game; never delete historical rows.
