@@ -19,6 +19,8 @@ import {
   drawSprite,
   loadSpritesheet,
 } from "@/components/games/arkanoid-sprites";
+import { TouchControls } from "@/components/games/touch-controls";
+import { useIsTouchDevice } from "@/lib/use-is-touch-device";
 // ── Constantes del motor ─────────────────────────────────────────────────────
 const W = 800;
 const H = 600;
@@ -353,6 +355,7 @@ class ArkanoidEngine {
 }
 export function ArkanoidPlayer({ game }: { game: Game }) {
   const router = useRouter();
+  const isTouch = useIsTouchDevice();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<ArkanoidEngine | null>(null);
   const [score, setScore] = useState(0);
@@ -457,6 +460,20 @@ export function ArkanoidPlayer({ game }: { game: Game }) {
     setSaved(true);
   };
   const finished = over || won;
+  const handleDirectionStart = (dir: "up" | "down" | "left" | "right") => {
+    const code = dir === "left" ? "ArrowLeft" : "ArrowRight";
+    engineRef.current?.handleKeyDown({
+      code,
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
+  const handleDirectionEnd = (dir: "up" | "down" | "left" | "right") => {
+    const code = dir === "left" ? "ArrowLeft" : "ArrowRight";
+    engineRef.current?.handleKeyUp({
+      code,
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
   return (
     <div className="av-player fade-in">
       <div className="player-hud">
@@ -580,6 +597,13 @@ export function ArkanoidPlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+      {isTouch && (
+        <TouchControls
+          onDirectionStart={handleDirectionStart}
+          onDirectionEnd={handleDirectionEnd}
+          disabledDirections={["up", "down"]}
+        />
+      )}
       {finished && (
         <div className="modal-bd">
           <div className="modal">
