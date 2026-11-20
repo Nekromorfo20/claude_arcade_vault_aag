@@ -50,6 +50,73 @@ export const ASTEROIDS_SKINS: Record<SkinId, SkinPalette> = {
     },
   },
 };
+export const SNAKE_SKINS: Record<SkinId, SkinPalette> = {
+  clasico: {
+    id: "clasico",
+    label: "Clásico",
+    background: "#000000",
+    grid: "rgba(255,255,255,0.06)",
+    text: "#ffffff",
+    accent: "#69f0ae",
+    entities: {
+      head: "#69f0ae",
+      body: "#2e7d32",
+      fruitFallback: "#ff4081",
+    },
+  },
+  neon: {
+    id: "neon",
+    label: "Neón",
+    background: "#05050a",
+    grid: "rgba(255,0,110,0.08)",
+    text: "#00ff88",
+    accent: "#ff006e",
+    entities: {
+      head: "#00ff88",
+      body: "#00b35f",
+      fruitFallback: "#ffb3d1",
+    },
+  },
+  retro: {
+    id: "retro",
+    label: "Retro",
+    background: "#0d1a0d",
+    grid: "rgba(90,255,140,0.06)",
+    text: "#8fd14f",
+    accent: "#fce08a",
+    entities: {
+      head: "#8fd14f",
+      body: "#5a9a35",
+      fruitFallback: "#fce08a",
+    },
+  },
+};
+export const ARKANOID_SKINS: Record<SkinId, SkinPalette> = {
+  clasico: {
+    id: "clasico",
+    label: "Clásico",
+    background: "#000000",
+    text: "#ffffff",
+    accent: "#ffffff",
+    entities: {},
+  },
+  neon: {
+    id: "neon",
+    label: "Neón",
+    background: "#05050a",
+    text: "#00f5ff",
+    accent: "#00f5ff",
+    entities: {},
+  },
+  retro: {
+    id: "retro",
+    label: "Retro",
+    background: "#0d0d1a",
+    text: "#ffcf3a",
+    accent: "#ffcf3a",
+    entities: {},
+  },
+};
 export function loadSkinPreference(gameId: string): SkinId {
   if (typeof window === "undefined") return DEFAULT_SKIN;
   try {

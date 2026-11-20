@@ -10,6 +10,14 @@ import {
   loadFruitSpritesheet,
   randomFruitName,
 } from "@/components/games/snake-sprites";
+import {
+  DEFAULT_SKIN,
+  loadSkinPreference,
+  saveSkinPreference,
+  SNAKE_SKINS,
+  type SkinId,
+  type SkinPalette,
+} from "@/lib/skins";
 // ── Constantes del motor ─────────────────────────────────────────────────────
 const COLS = 24;
 const ROWS = 24;
@@ -62,14 +70,23 @@ class SnakeEngine {
   lastTime: number | null = null;
   rafId: number | null = null;
   paused = false;
+  palette: SkinPalette;
   private lastReportedScore = -1;
   private lastReportedLength = -1;
   private lastReportedLevel = -1;
   private lastReportedState: GameState | null = null;
-  constructor(ctx: CanvasRenderingContext2D, callbacks: EngineCallbacks) {
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    callbacks: EngineCallbacks,
+    palette: SkinPalette = SNAKE_SKINS[DEFAULT_SKIN],
+  ) {
     this.ctx = ctx;
     this.callbacks = callbacks;
+    this.palette = palette;
     this.initGame();
+  }
+  setPalette(p: SkinPalette) {
+    this.palette = p;
   }
   initGame() {
     const startX = Math.floor(COLS / 2);
@@ -154,7 +171,7 @@ class SnakeEngine {
     this.reportStats();
   }
   drawGrid() {
-    this.ctx.strokeStyle = "rgba(255,255,255,0.06)";
+    this.ctx.strokeStyle = this.palette.grid ?? "rgba(255,255,255,0.06)";
     this.ctx.lineWidth = 0.5;
     for (let c = 1; c < COLS; c++) {
       this.ctx.beginPath();
@@ -172,7 +189,8 @@ class SnakeEngine {
   drawSnake() {
     const ctx = this.ctx;
     this.snake.forEach((segment, i) => {
-      ctx.fillStyle = i === 0 ? "#69f0ae" : "#2e7d32";
+      ctx.fillStyle =
+        i === 0 ? this.palette.entities.head : this.palette.entities.body;
       ctx.fillRect(
         segment.x * CELL + 1,
         segment.y * CELL + 1,
@@ -194,7 +212,7 @@ class SnakeEngine {
       );
       return;
     }
-    ctx.fillStyle = "#ff4081";
+    ctx.fillStyle = this.palette.entities.fruitFallback;
     ctx.fillRect(
       this.fruit.x * CELL + 3,
       this.fruit.y * CELL + 3,
@@ -204,7 +222,7 @@ class SnakeEngine {
   }
   draw() {
     const ctx = this.ctx;
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = this.palette.background;
     ctx.fillRect(0, 0, W, H);
     this.drawGrid();
     this.drawFruit();
@@ -295,6 +313,9 @@ export function SnakePlayer({ game }: { game: Game }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [skinId, setSkinId] = useState<SkinId>(() =>
+    loadSkinPreference(game.id),
+  );
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
@@ -315,17 +336,21 @@ export function SnakePlayer({ game }: { game: Game }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const engine = new SnakeEngine(ctx, {
-      onStatsChange: (s, l, lvl) => {
-        setScore(s);
-        setLength(l);
-        setLevel(lvl);
+    const engine = new SnakeEngine(
+      ctx,
+      {
+        onStatsChange: (s, l, lvl) => {
+          setScore(s);
+          setLength(l);
+          setLevel(lvl);
+        },
+        onStateChange: (state) => {
+          setPaused(state === "paused");
+          if (state === "gameover") setOver(true);
+        },
       },
-      onStateChange: (state) => {
-        setPaused(state === "paused");
-        if (state === "gameover") setOver(true);
-      },
-    });
+      SNAKE_SKINS[loadSkinPreference(game.id)],
+    );
     engineRef.current = engine;
     window.addEventListener("keydown", engine.handleKeyDown);
     window.addEventListener("keyup", engine.handleKeyUp);
@@ -343,6 +368,11 @@ export function SnakePlayer({ game }: { game: Game }) {
   }, []);
   const togglePause = () => {
     engineRef.current?.togglePause();
+  };
+  const changeSkin = (id: SkinId) => {
+    setSkinId(id);
+    saveSkinPreference(game.id, id);
+    engineRef.current?.setPalette(SNAKE_SKINS[id]);
   };
   const endGame = () => setOver(true);
   const restart = () => {
@@ -387,6 +417,20 @@ export function SnakePlayer({ game }: { game: Game }) {
           </div>
         </div>
         <div className="hud-actions">
+          {(Object.keys(SNAKE_SKINS) as SkinId[]).map((id) => (
+            <button
+              key={id}
+              className="btn ghost"
+              style={
+                skinId === id
+                  ? { borderColor: "var(--cyan)", color: "var(--cyan)" }
+                  : undefined
+              }
+              onClick={() => changeSkin(id)}
+            >
+              {SNAKE_SKINS[id].label.toUpperCase()}
+            </button>
+          ))}
           <button className="btn yellow" onClick={togglePause}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
