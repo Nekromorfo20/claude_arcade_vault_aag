@@ -4,6 +4,13 @@ import { useRouter } from "next/navigation";
 import type { Game } from "@/lib/data";
 import { createClient } from "@/lib/supabase/client";
 import { saveScore } from "@/lib/scores";
+import {
+  ARKANOID_SKINS,
+  loadSkinPreference,
+  saveSkinPreference,
+  type SkinId,
+  type SkinPalette,
+} from "@/lib/skins";
 import { LEVELS } from "@/components/games/arkanoid-levels";
 import {
   EXPLOSION_DURATION,
@@ -84,13 +91,19 @@ class ArkanoidEngine {
   breakSound: HTMLAudioElement | null = null;
   rafId: number | null = null;
   lastTime: number | null = null;
+  palette: SkinPalette;
   private lastReportedScore = -1;
   private lastReportedLives = -1;
   private lastReportedLevel = -1;
   private lastReportedState: GameState | null = null;
-  constructor(ctx: CanvasRenderingContext2D, callbacks: EngineCallbacks) {
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    callbacks: EngineCallbacks,
+    palette: SkinPalette = ARKANOID_SKINS.clasico,
+  ) {
     this.ctx = ctx;
     this.callbacks = callbacks;
+    this.palette = palette;
     if (typeof window !== "undefined") {
       this.bounceSound = new Audio("/arkanoid/sounds/ball-bounce.mp3");
       this.breakSound = new Audio("/arkanoid/sounds/break-sound.mp3");
@@ -100,6 +113,9 @@ class ArkanoidEngine {
   }
   initPaddle() {
     this.paddle.x = (W - this.paddle.w) / 2;
+  }
+  setPalette(p: SkinPalette) {
+    this.palette = p;
   }
   playBounce() {
     if (!this.bounceSound) return;
@@ -242,7 +258,7 @@ class ArkanoidEngine {
   }
   draw() {
     const ctx = this.ctx;
-    ctx.fillStyle = "#000";
+    ctx.fillStyle = this.palette.background;
     ctx.fillRect(0, 0, W, H);
     for (const block of this.blocks) {
       if (block.alive)
@@ -349,6 +365,9 @@ export function ArkanoidPlayer({ game }: { game: Game }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [skinId, setSkinId] = useState<SkinId>(() =>
+    loadSkinPreference(game.id),
+  );
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
@@ -369,18 +388,22 @@ export function ArkanoidPlayer({ game }: { game: Game }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const engine = new ArkanoidEngine(ctx, {
-      onStatsChange: (s, l, lvl) => {
-        setScore(s);
-        setLives(l);
-        setLevel(lvl);
+    const engine = new ArkanoidEngine(
+      ctx,
+      {
+        onStatsChange: (s, l, lvl) => {
+          setScore(s);
+          setLives(l);
+          setLevel(lvl);
+        },
+        onStateChange: (state) => {
+          setPaused(state === "paused");
+          if (state === "gameover") setOver(true);
+          if (state === "win") setWon(true);
+        },
       },
-      onStateChange: (state) => {
-        setPaused(state === "paused");
-        if (state === "gameover") setOver(true);
-        if (state === "win") setWon(true);
-      },
-    });
+      ARKANOID_SKINS[skinId],
+    );
     engineRef.current = engine;
     const handleKeyDown = (e: KeyboardEvent) => engine.handleKeyDown(e);
     const handleKeyUp = (e: KeyboardEvent) => engine.handleKeyUp(e);
@@ -421,6 +444,11 @@ export function ArkanoidPlayer({ game }: { game: Game }) {
   const exit = () => {
     router.push(`/juego/${game.id}`);
   };
+  const changeSkin = (id: SkinId) => {
+    setSkinId(id);
+    saveSkinPreference(game.id, id);
+    engineRef.current?.setPalette(ARKANOID_SKINS[id]);
+  };
   const confirmSave = async () => {
     if (!userId) return;
     setSaving(true);
@@ -453,6 +481,20 @@ export function ArkanoidPlayer({ game }: { game: Game }) {
           </div>
         </div>
         <div className="hud-actions">
+          {(Object.keys(ARKANOID_SKINS) as SkinId[]).map((id) => (
+            <button
+              key={id}
+              className="btn ghost"
+              style={
+                skinId === id
+                  ? { borderColor: "var(--cyan)", color: "var(--cyan)" }
+                  : undefined
+              }
+              onClick={() => changeSkin(id)}
+            >
+              {ARKANOID_SKINS[id].label.toUpperCase()}
+            </button>
+          ))}
           <button className="btn yellow" onClick={togglePause}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
