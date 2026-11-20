@@ -11,6 +11,8 @@ import {
   type SkinId,
   type SkinPalette,
 } from "@/lib/skins";
+import { TouchControls } from "@/components/games/touch-controls";
+import { useIsTouchDevice } from "@/lib/use-is-touch-device";
 // ── Utils ─────────────────────────────────────────────────────────────────────
 const W = 800;
 const H = 600;
@@ -583,6 +585,7 @@ class AsteroidsEngine {
 }
 export function AsteroidsPlayer({ game }: { game: Game }) {
   const router = useRouter();
+  const isTouch = useIsTouchDevice();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<AsteroidsEngine | null>(null);
   const [score, setScore] = useState(0);
@@ -674,6 +677,42 @@ export function AsteroidsPlayer({ game }: { game: Game }) {
     await saveScore(game.id, userId, score);
     setSaving(false);
     setSaved(true);
+  };
+  const handleDirectionStart = (dir: "up" | "down" | "left" | "right") => {
+    const codes: Record<typeof dir, string> = {
+      up: "ArrowUp",
+      down: "ArrowDown",
+      left: "ArrowLeft",
+      right: "ArrowRight",
+    };
+    engineRef.current?.handleKeyDown({
+      code: codes[dir],
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
+  const handleDirectionEnd = (dir: "up" | "down" | "left" | "right") => {
+    const codes: Record<typeof dir, string> = {
+      up: "ArrowUp",
+      down: "ArrowDown",
+      left: "ArrowLeft",
+      right: "ArrowRight",
+    };
+    engineRef.current?.handleKeyUp({
+      code: codes[dir],
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
+  const handleActionStart = (code: string) => {
+    engineRef.current?.handleKeyDown({
+      code,
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
+  const handleActionEnd = (code: string) => {
+    engineRef.current?.handleKeyUp({
+      code,
+      preventDefault: () => {},
+    } as KeyboardEvent);
   };
   return (
     <div className="av-player fade-in">
@@ -769,6 +808,19 @@ export function AsteroidsPlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+      {isTouch && (
+        <TouchControls
+          onDirectionStart={handleDirectionStart}
+          onDirectionEnd={handleDirectionEnd}
+          onActionStart={handleActionStart}
+          onActionEnd={handleActionEnd}
+          disabledDirections={["down"]}
+          actionButtons={[
+            { code: "Space", label: "A" },
+            { code: "ArrowUp", label: "B" },
+          ]}
+        />
+      )}
       {over && (
         <div className="modal-bd">
           <div className="modal">

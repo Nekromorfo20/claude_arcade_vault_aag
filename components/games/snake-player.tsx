@@ -18,6 +18,8 @@ import {
   type SkinId,
   type SkinPalette,
 } from "@/lib/skins";
+import { TouchControls } from "@/components/games/touch-controls";
+import { useIsTouchDevice } from "@/lib/use-is-touch-device";
 // ── Constantes del motor ─────────────────────────────────────────────────────
 const COLS = 24;
 const ROWS = 24;
@@ -300,8 +302,15 @@ class SnakeEngine {
   };
   handleKeyUp = () => {};
 }
+const DIRECTION_CODES: Record<Direction, string> = {
+  up: "ArrowUp",
+  down: "ArrowDown",
+  left: "ArrowLeft",
+  right: "ArrowRight",
+};
 export function SnakePlayer({ game }: { game: Game }) {
   const router = useRouter();
+  const isTouch = useIsTouchDevice();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<SnakeEngine | null>(null);
   const [score, setScore] = useState(0);
@@ -392,6 +401,15 @@ export function SnakePlayer({ game }: { game: Game }) {
     await saveScore(game.id, userId, score);
     setSaving(false);
     setSaved(true);
+  };
+  const handleDirectionStart = (dir: Direction) => {
+    engineRef.current?.handleKeyDown({
+      code: DIRECTION_CODES[dir],
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
+  const handleDirectionEnd = () => {
+    engineRef.current?.handleKeyUp();
   };
   return (
     <div className="av-player fade-in">
@@ -485,6 +503,12 @@ export function SnakePlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+      {isTouch && (
+        <TouchControls
+          onDirectionStart={handleDirectionStart}
+          onDirectionEnd={handleDirectionEnd}
+        />
+      )}
       {over && (
         <div className="modal-bd">
           <div className="modal">

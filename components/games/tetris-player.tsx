@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import type { Game } from "@/lib/data";
 import { createClient } from "@/lib/supabase/client";
 import { saveScore } from "@/lib/scores";
+import { TouchControls } from "@/components/games/touch-controls";
+import { useIsTouchDevice } from "@/lib/use-is-touch-device";
 // ── Constantes del motor ─────────────────────────────────────────────────────
 const COLS = 10;
 const ROWS = 20;
@@ -435,6 +437,7 @@ class TetrisEngine {
 }
 export function TetrisPlayer({ game }: { game: Game }) {
   const router = useRouter();
+  const isTouch = useIsTouchDevice();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nextCanvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<TetrisEngine | null>(null);
@@ -513,6 +516,30 @@ export function TetrisPlayer({ game }: { game: Game }) {
     await saveScore(game.id, userId, score);
     setSaving(false);
     setSaved(true);
+  };
+  const handleDirectionStart = (dir: "up" | "down" | "left" | "right") => {
+    const codes: Record<typeof dir, string> = {
+      up: "ArrowUp",
+      down: "ArrowDown",
+      left: "ArrowLeft",
+      right: "ArrowRight",
+    };
+    engineRef.current?.handleKeyDown({
+      code: codes[dir],
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
+  const handleDirectionEnd = () => {
+    engineRef.current?.handleKeyUp();
+  };
+  const handleActionStart = (code: string) => {
+    engineRef.current?.handleKeyDown({
+      code,
+      preventDefault: () => {},
+    } as KeyboardEvent);
+  };
+  const handleActionEnd = () => {
+    engineRef.current?.handleKeyUp();
   };
   return (
     <div className="av-player fade-in">
@@ -603,6 +630,19 @@ export function TetrisPlayer({ game }: { game: Game }) {
           <span>CARGA · 1MB</span>
         </div>
       </div>
+      {isTouch && (
+        <TouchControls
+          onDirectionStart={handleDirectionStart}
+          onDirectionEnd={handleDirectionEnd}
+          onActionStart={handleActionStart}
+          onActionEnd={handleActionEnd}
+          disabledDirections={["up"]}
+          actionButtons={[
+            { code: "ArrowUp", label: "⟲" },
+            { code: "Space", label: "⇓" },
+          ]}
+        />
+      )}
       {over && (
         <div className="modal-bd">
           <div className="modal">
